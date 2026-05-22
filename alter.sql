@@ -138,3 +138,29 @@ SELECT  *  from students
 
   SELECT * FROM students 
   WHERE grade = 'A-' AND course = 'Physics';
+
+SELECT *  FROM students
+WHERE age > 20 ;
+SELECT upper(first_name) from students;
+SELECT  concat(first_name,' ',last_name) from students;
+SELECT max(length(first_name)) FROM students;
+
+SELECT * FROM students
+WHERE email IS NOT NULL;
+
+
+SELECT * FROM students 
+  WHERE country ='India' or country = 'Bangladesh' or country='UK';
+
+SELECT * FROM students WHERE country NOT IN('Australia','Canada','USA');
+
+
+SELECT * FROM students 
+     WHERE age BETWEEN 19 and 20;
+
+SELECT * FROM students
+         WHERE first_name LIKE 'A%';
+SELECT * FROM students
+        WHERE first_name ILIKE 'A%';
+
+SELECT * FROM students LIMIT 5 OFFSET 5;
