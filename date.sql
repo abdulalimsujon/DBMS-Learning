@@ -24,3 +24,8 @@ SELECT CURRENT_DATE - INTERVAL '1 year 2 month';
 
 
 SELECT * FROM students;
+
+SELECT * ,age(CURRENT_DATE,dob) from students;
+
+SELECT extract(month from '2024-01-25'::date);
+

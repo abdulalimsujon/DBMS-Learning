@@ -202,12 +202,15 @@ Anomalies in a database refer to inconsistencies or unexpected issues that can o
 There are three types of anomalies:
 
 ### 1. Update Anomaly
+
 An update anomaly occurs when the same data is stored in multiple places and must be updated everywhere. If one place is missed, inconsistent data may occur.
 
 ### 2. Delete Anomaly
+
 A delete anomaly occurs when deleting one piece of data unintentionally removes other important data.
 
 ### 3. Insert Anomaly
+
 An insert anomaly occurs when certain data cannot be inserted into the database without the presence of other related data.
 
 ---
@@ -976,5 +979,280 @@ SELECT email AS "student email"
 FROM students;
 ```
 
+# PostgreSQL Date & Time Notes
+
+## Check Current Timezone
+
+```sql
+SHOW timezone;
+```
+
+Displays the current database session timezone.
+
 ---
 
+## Get Current Date and Time
+
+```sql
+SELECT now();
+```
+
+Example Output:
+
+```sql
+2026-06-04 22:58:27.11738+06
+```
+
+Returns the current timestamp with timezone information.
+
+---
+
+## Get Only Current Date
+
+```sql
+SELECT now()::date;
+
+SELECT CURRENT_DATE;
+```
+
+Example Output:
+
+```sql
+2026-06-04
+```
+
+Both return only the current date.
+
+---
+
+# Timestamp Data Types
+
+## Create Table
+
+```sql
+CREATE TABLE timeZ (
+    ts  TIMESTAMP WITHOUT TIME ZONE,
+    tsz TIMESTAMP WITH TIME ZONE
+);
+```
+
+### Difference
+
+| Data Type                   | Description                                 |
+| --------------------------- | ------------------------------------------- |
+| TIMESTAMP WITHOUT TIME ZONE | Stores only date and time                   |
+| TIMESTAMP WITH TIME ZONE    | Stores date, time, and timezone information |
+
+---
+
+## Insert Data
+
+```sql
+INSERT INTO timeZ
+VALUES (
+    '2024-01-12 10:45:00',
+    '2026-06-12 10:45:00'
+);
+```
+
+---
+
+## View Data
+
+```sql
+SELECT * FROM timeZ;
+```
+
+Example Output:
+
+```sql
+ts  | 2024-01-12 10:45:00
+tsz | 2026-06-12 10:45:00+06
+```
+
+Notice that `tsz` contains timezone information.
+
+---
+
+# Format Date & Time
+
+## Convert Date to Custom Format
+
+```sql
+SELECT TO_CHAR(now(), 'YYYY/MM/DD');
+```
+
+Example Output:
+
+```sql
+2026/06/04
+```
+
+Common Formats:
+
+| Format | Meaning               |
+| ------ | --------------------- |
+| YYYY   | 4-digit year          |
+| MM     | Month                 |
+| DD     | Day                   |
+| HH24   | Hour (24-hour format) |
+| MI     | Minutes               |
+| SS     | Seconds               |
+
+Example:
+
+```sql
+SELECT TO_CHAR(now(), 'YYYY-MM-DD HH24:MI:SS');
+```
+
+---
+
+# Date Arithmetic
+
+## Subtract Interval from Current Date
+
+```sql
+SELECT CURRENT_DATE - INTERVAL '1 year 2 month';
+```
+
+Returns the date that was 1 year and 2 months before today.
+
+---
+
+## Add Interval
+
+```sql
+SELECT CURRENT_DATE + INTERVAL '10 day';
+```
+
+Returns a date 10 days in the future.
+
+---
+
+# Calculate Age
+
+## Calculate Age Between Two Dates
+
+```sql
+SELECT AGE(CURRENT_DATE, '1996-07-29');
+```
+
+Example Output:
+
+```sql
+29 years 10 mons 6 days
+```
+
+Returns the difference as:
+
+- Years
+- Months
+- Days
+
+---
+
+## Calculate Age for Every Student
+
+```sql
+SELECT *,
+       AGE(CURRENT_DATE, dob)
+FROM students;
+```
+
+Example Output:
+
+| id  | name | dob        | age                     |
+| --- | ---- | ---------- | ----------------------- |
+| 1   | John | 2000-05-10 | 26 years 0 mons 25 days |
+
+Useful for calculating a person's age from their date of birth.
+
+---
+
+# Extract Specific Parts from Date
+
+## Extract Month
+
+```sql
+SELECT EXTRACT(MONTH FROM '2024-01-25'::date);
+```
+
+Output:
+
+```sql
+1
+```
+
+---
+
+## Extract Year
+
+```sql
+SELECT EXTRACT(YEAR FROM '2024-01-25'::date);
+```
+
+Output:
+
+```sql
+2024
+```
+
+---
+
+## Extract Day
+
+```sql
+SELECT EXTRACT(DAY FROM '2024-01-25'::date);
+```
+
+Output:
+
+```sql
+25
+```
+
+---
+
+# Quick Summary
+
+```sql
+-- Check timezone
+SHOW timezone;
+
+-- Current timestamp
+SELECT now();
+
+-- Current date
+SELECT CURRENT_DATE;
+
+-- Format date
+SELECT TO_CHAR(now(), 'YYYY/MM/DD');
+
+-- Date arithmetic
+SELECT CURRENT_DATE - INTERVAL '1 year 2 month';
+
+-- Calculate age
+SELECT AGE(CURRENT_DATE, '1996-07-29');
+
+-- Calculate age from DOB column
+SELECT *, AGE(CURRENT_DATE, dob)
+FROM students;
+
+-- Extract month
+SELECT EXTRACT(MONTH FROM '2024-01-25'::date);
+```
+
+## Key Functions
+
+| Function       | Purpose                     |
+| -------------- | --------------------------- |
+| `now()`        | Current timestamp           |
+| `CURRENT_DATE` | Current date                |
+| `TO_CHAR()`    | Format date/time            |
+| `AGE()`        | Calculate age/difference    |
+| `INTERVAL`     | Add/Subtract time           |
+| `EXTRACT()`    | Extract year/month/day etc. |
+| `TIMESTAMP`    | Store date & time           |
+| `TIMESTAMPTZ`  | Store date, time & timezone |
+
+---
