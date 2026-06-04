@@ -1255,4 +1255,299 @@ SELECT EXTRACT(MONTH FROM '2024-01-25'::date);
 | `TIMESTAMP`    | Store date & time           |
 | `TIMESTAMPTZ`  | Store date, time & timezone |
 
+# PostgreSQL GROUP BY & HAVING Notes
+
+## View All Students
+
+```sql
+SELECT * FROM students;
+```
+
+Returns all rows and columns from the `students` table.
+
+---
+
+# GROUP BY
+
+`GROUP BY` is used to group rows that have the same values in one or more columns.
+
+Syntax:
+
+```sql
+SELECT column_name, aggregate_function(column_name)
+FROM table_name
+GROUP BY column_name;
+```
+
+---
+
+## Get Unique Countries
+
+```sql
+SELECT country
+FROM students
+GROUP BY country;
+```
+
+This groups rows by country and effectively returns distinct countries.
+
+Equivalent to:
+
+```sql
+SELECT DISTINCT country
+FROM students;
+```
+
+---
+
+## Count Students Per Country
+
+```sql
+SELECT country, COUNT(*)
+FROM students
+GROUP BY country;
+```
+
+Example Output:
+
+| country | count |
+| ------- | ----- |
+| USA     | 10    |
+| Canada  | 5     |
+| UK      | 7     |
+
+---
+
+## Count Students and Average Age Per Country
+
+```sql
+SELECT country,
+       COUNT(*),
+       AVG(age)
+FROM students
+GROUP BY country;
+```
+
+Example Output:
+
+| country | count | avg  |
+| ------- | ----- | ---- |
+| USA     | 10    | 23.5 |
+| Canada  | 5     | 21.8 |
+
+Aggregate Functions:
+
+| Function | Description    |
+| -------- | -------------- |
+| COUNT()  | Counts rows    |
+| AVG()    | Average value  |
+| SUM()    | Total value    |
+| MIN()    | Smallest value |
+| MAX()    | Largest value  |
+
+---
+
+# HAVING Clause
+
+`HAVING` filters grouped data after `GROUP BY`.
+
+### Difference Between WHERE and HAVING
+
+| WHERE                                   | HAVING                      |
+| --------------------------------------- | --------------------------- |
+| Filters individual rows                 | Filters grouped results     |
+| Executes before GROUP BY                | Executes after GROUP BY     |
+| Cannot use aggregate functions directly | Can use aggregate functions |
+
+---
+
+## Filter Groups Using HAVING
+
+```sql
+SELECT country,
+       AVG(age)
+FROM students
+GROUP BY country
+HAVING AVG(age) > 20;
+```
+
+Returns only countries where the average age is greater than 20.
+
+Execution Order:
+
+```text
+FROM
+↓
+WHERE
+↓
+GROUP BY
+↓
+HAVING
+↓
+SELECT
+↓
+ORDER BY
+```
+
+---
+
+# Group By Date of Birth
+
+## Count Students Having Same DOB
+
+```sql
+SELECT dob,
+       COUNT(*)
+FROM students
+GROUP BY dob;
+```
+
+Example Output:
+
+| dob        | count |
+| ---------- | ----- |
+| 2000-05-10 | 3     |
+| 2001-01-20 | 2     |
+
+Groups students by exact date of birth.
+
+---
+
+# Group By Birth Year
+
+## Count Students by Birth Year
+
+❌ Incorrect:
+
+```sql
+SELECT EXTRACT(YEAR FROM dob) AS birth_year,
+       COUNT(*)
+FROM students
+GROUP BY dob;
+```
+
+Reason:
+If you select `EXTRACT(YEAR FROM dob)`, then you should group by the same expression.
+
+---
+
+✅ Correct:
+
+```sql
+SELECT EXTRACT(YEAR FROM dob) AS birth_year,
+       COUNT(*)
+FROM students
+GROUP BY EXTRACT(YEAR FROM dob);
+```
+
+Example Output:
+
+| birth_year | count |
+| ---------- | ----- |
+| 2000       | 15    |
+| 2001       | 12    |
+| 2002       | 9     |
+
+This groups students by year instead of exact birth date.
+
+---
+
+# More GROUP BY Examples
+
+## Maximum Age Per Country
+
+```sql
+SELECT country,
+       MAX(age)
+FROM students
+GROUP BY country;
+```
+
+---
+
+## Minimum Age Per Country
+
+```sql
+SELECT country,
+       MIN(age)
+FROM students
+GROUP BY country;
+```
+
+---
+
+## Total Age Per Country
+
+```sql
+SELECT country,
+       SUM(age)
+FROM students
+GROUP BY country;
+```
+
+---
+
+## Multiple Columns in GROUP BY
+
+```sql
+SELECT country,
+       gender,
+       COUNT(*)
+FROM students
+GROUP BY country, gender;
+```
+
+Groups students by both country and gender.
+
+---
+
+# Quick Summary
+
+```sql
+-- Unique countries
+SELECT country
+FROM students
+GROUP BY country;
+
+-- Count students by country
+SELECT country, COUNT(*)
+FROM students
+GROUP BY country;
+
+-- Average age by country
+SELECT country, AVG(age)
+FROM students
+GROUP BY country;
+
+-- Filter groups
+SELECT country, AVG(age)
+FROM students
+GROUP BY country
+HAVING AVG(age) > 20;
+
+-- Count by DOB
+SELECT dob, COUNT(*)
+FROM students
+GROUP BY dob;
+
+-- Count by birth year
+SELECT EXTRACT(YEAR FROM dob) AS birth_year,
+       COUNT(*)
+FROM students
+GROUP BY EXTRACT(YEAR FROM dob);
+```
+
+## Key Concepts
+
+| Concept   | Purpose                      |
+| --------- | ---------------------------- |
+| GROUP BY  | Groups rows with same values |
+| COUNT()   | Counts rows                  |
+| AVG()     | Calculates average           |
+| SUM()     | Calculates total             |
+| MIN()     | Smallest value               |
+| MAX()     | Largest value                |
+| HAVING    | Filters grouped data         |
+| EXTRACT() | Extracts parts of date/time  |
+
 ---
