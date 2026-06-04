@@ -193,6 +193,91 @@ Because all can uniquely identify a row.
 
 ---
 
+# Database Concepts
+
+## Anomalies
+
+Anomalies in a database refer to inconsistencies or unexpected issues that can occur during data manipulation or retrieval.
+
+There are three types of anomalies:
+
+### 1. Update Anomaly
+An update anomaly occurs when the same data is stored in multiple places and must be updated everywhere. If one place is missed, inconsistent data may occur.
+
+### 2. Delete Anomaly
+A delete anomaly occurs when deleting one piece of data unintentionally removes other important data.
+
+### 3. Insert Anomaly
+An insert anomaly occurs when certain data cannot be inserted into the database without the presence of other related data.
+
+---
+
+# Functional Dependency
+
+Functional dependency means that the value of one attribute (or a set of attributes) uniquely determines the value of another attribute in a database table.
+
+Example:
+
+```text
+T1.x = T2.x
+T1.y = T2.y
+```
+
+This means if two rows have the same value of `x`, then they must also have the same value of `y`.
+
+---
+
+# Normalization
+
+Normalization is a series of guidelines that helps ensure that the design of a database is efficient, organized, and free from data anomalies.
+
+---
+
+# First Normal Form (1NF)
+
+A table is in First Normal Form if it satisfies the following rules:
+
+1. Atomic values only (each column contains a single value).
+2. Unique rows/records.
+3. No positional dependency of data.
+4. Columns should contain data of the same type.
+5. A primary key should be defined.
+
+---
+
+# Second Normal Form (2NF)
+
+A table is in Second Normal Form if:
+
+1. It is already in 1NF.
+2. It does not contain any non-prime (non-key) attribute that is functionally dependent on a proper subset of any candidate key.
+
+---
+
+# Third Normal Form (3NF)
+
+A table is in Third Normal Form if:
+
+1. It is already in 2NF.
+2. It does not contain transitive dependency.
+
+## Transitive Dependency
+
+If:
+
+```text
+X → Y
+Y → Z
+```
+
+Then:
+
+```text
+X → Z
+```
+
+This is called transitive dependency.
+
 # SQL Commands in DBMS
 
 SQL commands are divided into several categories:
