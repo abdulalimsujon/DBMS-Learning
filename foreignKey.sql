@@ -10,7 +10,8 @@
     CREATE TABLE "post"(
         id SERIAL PRIMARY KEY,
         title TEXT NOT NULL,
-        user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE
+        user_id INTEGER REFERENCES "user"(id) 
+        --user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE
          -- user_id INTEGER REFERENCES "user"(id) ON DELETE set DEFAULT DEFAULT 2;
     )
 

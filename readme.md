@@ -1550,4 +1550,362 @@ GROUP BY EXTRACT(YEAR FROM dob);
 | HAVING    | Filters grouped data         |
 | EXTRACT() | Extracts parts of date/time  |
 
+# 🔑 PostgreSQL Foreign Key Notes (Full Revision)
+
+---
+
+## 🧠 What is Foreign Key?
+
+A **Foreign Key** is a column that links one table to another table’s **Primary Key**.
+
+👉 It creates a relationship between tables.
+
+Example:
+
+- `post.user_id → user.id`
+
+---
+
+## 👤 Step 1: Create User Table (Parent Table)
+
+```sql
+CREATE TABLE "user" (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(25) NOT NULL
+);
+```
+
+---
+
+## 📝 Step 2: Create Post Table (Child Table)
+
+### 🔗 Foreign Key Relationship
+
+```sql
+CREATE TABLE "post" (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    user_id INTEGER REFERENCES "user"(id)
+);
+```
+
+---
+
+## 📌 Insert Data into User Table
+
+```sql
+INSERT INTO "user"(username)
+VALUES
+('abdul alim'),
+('shamim al mamun'),
+('sujon'),
+('raian'),
+('mahmudul');
+```
+
+---
+
+## 📌 View Users
+
+```sql
+SELECT * FROM "user";
+```
+
+---
+
+## 📌 Insert Data into Post Table
+
+```sql
+INSERT INTO post (title, user_id) VALUES
+('Introduction to PostgreSQL', 1),
+('Learning SQL Joins', 1),
+('My First Database Project', 2),
+('Understanding Normalization', 2),
+('MongoDB vs PostgreSQL', 3),
+('Database Indexing Guide', 3),
+('How to Use Foreign Keys', 4),
+('ACID Properties Explained', 4),
+('Advanced SQL Queries', 5),
+('Database Design Best Practices', 5);
+```
+
+---
+
+## 📌 View Posts
+
+```sql
+SELECT * FROM post;
+```
+
+---
+
+## 🧨 Delete Example
+
+```sql
+DELETE FROM "user"
+WHERE id = 4;
+```
+
+---
+
+## ⚠️ Foreign Key Delete Rules
+
+---
+
+## 🔥 1. CASCADE
+
+👉 If parent is deleted → child rows also deleted
+
+```sql
+user_id INTEGER REFERENCES "user"(id) ON DELETE CASCADE;
+```
+
+---
+
+## ⚪ 2. SET NULL
+
+👉 If parent is deleted → child becomes NULL
+
+```sql
+user_id INTEGER REFERENCES "user"(id) ON DELETE SET NULL;
+```
+
+---
+
+## 🟡 3. SET DEFAULT
+
+👉 If parent is deleted → default value used
+
+```sql
+user_id INTEGER REFERENCES "user"(id) ON DELETE SET DEFAULT DEFAULT 2;
+```
+
+---
+
+## 🚫 4. RESTRICT (Default)
+
+👉 Prevents deletion if child exists
+
+---
+
+## 🧠 Example Behavior
+
+### If you run:
+
+```sql
+DELETE FROM "user" WHERE id = 4;
+```
+
+### Then:
+
+- CASCADE → post rows deleted too
+- SET NULL → post.user_id becomes NULL
+- RESTRICT → deletion blocked
+- SET DEFAULT → user_id becomes default value
+
+---
+
+## 📌 Final Relationship Example
+
+### Tables:
+
+```
+user (parent)
+  id → PK
+
+post (child)
+  user_id → FK references user.id
+```
+
+---
+
+## 🚀 Real JOIN Connection
+
+```sql
+SELECT p.title, u.username
+FROM post p
+INNER JOIN "user" u
+ON p.user_id = u.id;
+```
+
+---
+
+## 🧾 Quick Summary
+
+- FOREIGN KEY = links tables
+- REFERENCES = defines relation
+- ON DELETE = controls behavior when parent is deleted
+
+---
+
+# 📘 PostgreSQL Joins – Full Examples (Easy Revision)
+
+---
+
+## 🟢 1. INNER JOIN
+
+### 👉 Only matching records from both tables
+
+### Example
+
+```sql
+SELECT p.title, u.username
+FROM post p
+INNER JOIN "user" u
+ON p.user_id = u.id;
+```
+
+### Result idea:
+
+| title                     | username        |
+| ------------------------- | --------------- |
+| Intro to PostgreSQL       | abdul alim      |
+| SQL Joins                 | abdul alim      |
+| My First Database Project | shamim al mamun |
+
+✔ Only rows where `user_id` exists in both tables
+
+---
+
+## 🔵 2. LEFT JOIN
+
+### 👉 All posts + matching users (NULL if no user)
+
+### Example
+
+```sql
+SELECT p.title, u.username
+FROM post p
+LEFT JOIN "user" u
+ON p.user_id = u.id;
+```
+
+### Result idea:
+
+| title               | username   |
+| ------------------- | ---------- |
+| Intro to PostgreSQL | abdul alim |
+| Some Post           | NULL       |
+
+✔ All rows from LEFT table (post)
+
+---
+
+## 🟣 3. RIGHT JOIN
+
+### 👉 All users + matching posts (NULL if no post)
+
+### Example
+
+```sql
+SELECT p.title, u.username
+FROM post p
+RIGHT JOIN "user" u
+ON p.user_id = u.id;
+```
+
+### Result idea:
+
+| title               | username   |
+| ------------------- | ---------- |
+| Intro to PostgreSQL | abdul alim |
+| NULL                | new_user   |
+
+✔ All rows from RIGHT table (user)
+
+---
+
+## 🟡 4. FULL JOIN
+
+### 👉 Everything from both tables
+
+### Example
+
+```sql
+SELECT p.title, u.username
+FROM post p
+FULL JOIN "user" u
+ON p.user_id = u.id;
+```
+
+### Result idea:
+
+| title               | username   |
+| ------------------- | ---------- |
+| Intro to PostgreSQL | abdul alim |
+| NULL                | ghost_user |
+| Some Post           | NULL       |
+
+✔ Shows all matched + unmatched rows
+
+---
+
+## 🔴 5. CROSS JOIN
+
+### 👉 Every combination of rows
+
+### Example
+
+```sql
+SELECT e.emp_name, d.dept_name
+FROM employees e
+CROSS JOIN departments d;
+```
+
+### Result idea:
+
+If:
+
+- 3 employees
+- 3 departments
+
+Then result = 9 rows
+
+| emp_name    | dept_name |
+| ----------- | --------- |
+| JHON DOE    | CSE       |
+| JHON DOE    | SWE       |
+| JHON DOE    | EEE       |
+| CARCLIN DOE | CSE       |
+| ...         | ...       |
+
+✔ Cartesian product (all combinations)
+
+---
+
+## 🟤 6. NATURAL JOIN
+
+### 👉 Automatically joins same column name (`dept_id`)
+
+### Example
+
+```sql
+SELECT e.emp_name, d.dept_name
+FROM employees e
+NATURAL JOIN departments d;
+```
+
+### Result idea:
+
+| emp_name    | dept_name |
+| ----------- | --------- |
+| JHON DOE    | CSE       |
+| CARCLIN DOE | SWE       |
+| JONNY       | EEE       |
+
+✔ Auto-matches same column names
+
+---
+
+## 🚀 Quick Memory Trick
+
+| Join    | Meaning            |
+| ------- | ------------------ |
+| INNER   | only match         |
+| LEFT    | all left + match   |
+| RIGHT   | all right + match  |
+| FULL    | everything         |
+| CROSS   | all combinations   |
+| NATURAL | auto match columns |
+
 ---
