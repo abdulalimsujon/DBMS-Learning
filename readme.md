@@ -1908,4 +1908,56 @@ NATURAL JOIN departments d;
 | CROSS   | all combinations   |
 | NATURAL | auto match columns |
 
+## PostgreSQL Basic Commands
+
+### Show users (roles)
+
+```sql
+\du
+```
+
+### Show tables
+
+```sql
+\d
+```
+
+### Show current connection info
+
+```sql
+\conninfo
+```
+
+---
+
+## User Management
+
+### Create a user with password
+
+```sql
+CREATE USER user2 WITH LOGIN ENCRYPTED PASSWORD '123456';
+```
+
+---
+
+## Privileges Management
+
+### Grant all privileges on a table
+
+```sql
+GRANT ALL PRIVILEGES ON TABLE test_table TO user1;
+```
+
+### Revoke SELECT permission from a user
+
+```sql
+REVOKE SELECT ON TABLE testing_table FROM user1;
+```
+
+### Grant SELECT on all tables in schema
+
+```sql
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO role1;
+```
+
 ---
