@@ -1,4 +1,4 @@
-# DBMS & SQL Notes
+## DBMS & SQL Notes
 
 ## 1. Database
 
