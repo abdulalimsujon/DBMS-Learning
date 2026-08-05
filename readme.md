@@ -90,6 +90,49 @@ Most popular database model.
 - Maintains relationships using keys
 
 ---
+# ACID Properties
+
+## 1. Atomicity (All or Nothing)
+- A transaction is treated as a single unit.
+- Either **all operations succeed** or **none of them are applied**.
+- If any step fails, the entire transaction is rolled back.
+
+**Example:**
+Transfer ৳100 from Account A to Account B.
+- Deduct from A ✅
+- Add to B ❌ (fails)
+
+Result: Deduction from A is also rolled back.
+
+---
+
+## 2. Consistency (Rules Never Break)
+- A transaction always keeps the database in a **valid state**.
+- All constraints, validations, and rules must remain satisfied before and after the transaction.
+
+**Example:**
+- Balance cannot become negative.
+- Unique email constraint cannot be violated.
+
+---
+
+## 3. Isolation (No Interference)
+- Multiple transactions can run at the same time without affecting each other.
+- One transaction should not see the incomplete changes of another.
+
+**Example:**
+If User A is updating a balance, User B should not read the partially updated balance.
+
+---
+
+## 4. Durability (Survives Crashes)
+- Once a transaction is committed, the data is permanently saved.
+- Even if the server or database crashes immediately after, the committed data is not lost.
+
+**Example:**
+After a successful money transfer, the updated balances remain even after a power failure.
+
+---
 
 # 7. Entity / Relation
 
