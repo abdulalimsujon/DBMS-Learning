@@ -80,7 +80,7 @@ VALUES
 
 ('William', 'Anderson', 22, 'A', 'Economics', 'william.anderson@gmail.com', '2003-08-14', 'AB-', 'Italy'),
 
-('Mia', 'Taylor', 21, 'A-', 'Business Administration', 'mia.taylor@gmail.com', '2004-02-09', 'A+', 'Bangladesh');
+
 
 
 INSERT INTO students 
