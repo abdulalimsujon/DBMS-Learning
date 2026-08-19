@@ -1,4 +1,4 @@
--- Active: 1779386390689@@127.0.0.1@5432@postgres@publi
+-- Active: 1779386390689@@
 select * from person;
 
 INSERT INTO person
